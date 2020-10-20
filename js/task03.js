@@ -4,28 +4,14 @@ const randomIntegerFromInterval = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const makeTransaction1 = (transaction, onSuccess, onError) => {
-  const delay = randomIntegerFromInterval(200, 500);
-
-  setTimeout(() => {
-    const canProcess = Math.random() > 0.3;
-
-    if (canProcess) {
-      onSuccess(transaction.id, delay);
-    } else {
-      onError(transaction.id);
-    }
-  }, delay);
-};
-
 const makeTransaction = (transaction) => {
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     const delay = randomIntegerFromInterval(200, 500);
-
     setTimeout(() => {
-      Math.random() > 0.3
-        ? res({ id: transaction.id, time: delay })
-        : rej(transaction.id);
+      const canProcess = Math.random() > 0.3;
+      return canProcess
+        ? resolve({ id: transaction.id, time: delay })
+        : reject(transaction.id);
     }, delay);
   });
 };
@@ -35,7 +21,7 @@ const logSuccess = ({ id, time }) => {
 };
 
 const logError = (id) => {
-  console.log(`Error processing transaction ${id}. Please try again later.`);
+  console.warn(`Error processing transaction ${id}. Please try again later.`);
 };
 
 doButtonRef.addEventListener("click", doButtonHolder);
